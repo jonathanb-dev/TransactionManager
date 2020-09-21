@@ -7,6 +7,9 @@ import '../../../helpers/route_helper.dart';
 // Models
 import '../../../models/transactions.dart';
 
+// Delegates
+import '../delegates/search_transactions_delegate.dart';
+
 // Widgets
 import '../widgets/transaction_list.dart';
 
@@ -59,6 +62,19 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           title: Text(
             'Transactions',
           ),
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.search,
+              ),
+              onPressed: () {
+                showSearch(
+                  context: context,
+                  delegate: SearchTransactionsDelegate(),
+                );
+              },
+            ),
+          ],
         ),
         body: FutureBuilder(
           future: _transactionsFuture,
@@ -78,9 +94,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             else {
               return TabBarView(
                 children: [
-                  TransactionList(DisplayMode.All),
-                  TransactionList(DisplayMode.Gains),
-                  TransactionList(DisplayMode.Losses),
+                  TransactionList(
+                    DisplayMode.All,
+                  ),
+                  TransactionList(
+                    DisplayMode.Gains,
+                  ),
+                  TransactionList(
+                    DisplayMode.Losses,
+                  ),
                 ],
               );
             }

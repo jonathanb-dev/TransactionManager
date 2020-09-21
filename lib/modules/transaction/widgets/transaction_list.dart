@@ -8,37 +8,23 @@ import '../../../models/transaction.dart';
 // Widgets
 import './transaction_item.dart';
 
-enum DisplayMode {
-  All,
-  Gains,
-  Losses
-}
-
 class TransactionList extends StatelessWidget {
   final DisplayMode displayMode;
+  final String searchQuery;
 
-  TransactionList(this.displayMode);
-
-  List<Transaction> _getTransactionsByDisplayMode(Transactions transactionsModel) {
-    switch(displayMode) {
-      case DisplayMode.All:
-        return transactionsModel.transactions;
-      case DisplayMode.Gains:
-        return transactionsModel.gains;
-      case DisplayMode.Losses:
-        return transactionsModel.losses;
-      default:
-        return transactionsModel.transactions;
-    }
-  }
+  TransactionList(this.displayMode, {
+    this.searchQuery = '',
+  });
 
   @override
   Widget build(BuildContext context) {
     final Transactions transactionsModel = Provider.of<Transactions>(
       context,
     );
-    final List<Transaction> transactions = _getTransactionsByDisplayMode(transactionsModel);
-
+    List<Transaction> transactions = transactionsModel.getFilteredTransactionsByDisplayMode(
+      displayMode,
+      searchQuery: searchQuery,
+    );
     if (transactions.isEmpty) {
       return Center(
         child: Text(
@@ -46,7 +32,6 @@ class TransactionList extends StatelessWidget {
         ),
       );
     }
-
     return ListView.builder(
       itemBuilder: (context, index) => TransactionItem(transactions[index]),
       itemCount: transactions.length,
